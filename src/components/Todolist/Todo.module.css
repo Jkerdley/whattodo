@@ -10,6 +10,24 @@
 	backdrop-filter: blur(20px);
 }
 
+.searchItem {
+	font-weight: 600;
+	font-size: 18px;
+	width: 400px;
+	height: 20px;
+	margin: 20px auto; /* сохраняем тот же отступ, что и у обёртки */
+	margin-bottom: 30px; /* сохраняем тот же нижний отступ */
+	padding: 10px; /* добавляем отступы для лучшей видимости контента */
+	background-color: #fafafa; /* добавляем светло-серый фон для контраста */
+	border: 1px solid #ddd; /* изменяем цвет и ширину границы для более мягкого вида */
+	border-radius: 10px; /* добавляем эффект скругления углов */
+	margin-right: 15px;
+}
+.searchItem:focus {
+	outline: none;
+	background-color: #ffffff;
+}
+
 .input {
 	font-weight: 600;
 	font-size: 18px;
@@ -63,4 +81,9 @@
 	100% {
 		transform: rotate(360deg);
 	}
+}
+.nothing {
+	color: #000;
+	font-weight: 600;
+	font-size: 24px;
 }

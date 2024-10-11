@@ -1,44 +1,39 @@
 {
-	"todos": [
-		{
-			"id": "1",
-			"title": "delectus aut autem",
-			"completed": false
-		},
-		{
-			"id": "4",
-			"title": "et porro tempora",
-			"completed": true
-		},
-		{
-			"id": "5",
-			"title": "laboriosam mollitia et enim quasi adipisci quia provident illum",
-			"completed": false
-		},
-		{
-			"id": "6",
-			"title": "qui ullam ratione quibusdam voluptatem quia omnis",
-			"completed": false
-		},
-		{
-			"id": "8",
-			"title": "quo adipisci enim quam ut ab",
-			"completed": true
-		},
-		{
-			"id": "9",
-			"title": "molestiae perspiciatis ipsa",
-			"completed": false
-		},
-		{
-			"id": "10",
-			"title": "illo est ratione doloremque quia maiores aut",
-			"completed": true
-		},
-		{
-			"id": "a4cb",
-			"title": "Новая задача",
-			"completed": false
-		}
-	]
+  "todos": [
+    {
+      "id": "1",
+      "title": "Сходить в магазин",
+      "completed": false
+    },
+    {
+      "id": "4",
+      "title": "Собраться с друзьями на море",
+      "completed": true
+    },
+    {
+      "id": "5",
+      "title": "Make africa great again",
+      "completed": false
+    },
+    {
+      "id": "6",
+      "title": "Find new music for my playlist",
+      "completed": false
+    },
+    {
+      "id": "8",
+      "title": "Купить машину срочно",
+      "completed": true
+    },
+    {
+      "id": "9",
+      "title": "Отдать в ремонт холодильник",
+      "completed": false
+    },
+    {
+      "id": "10",
+      "title": "Написать приложение с поиском",
+      "completed": true
+    }
+  ]
 }

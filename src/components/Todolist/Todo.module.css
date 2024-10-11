@@ -1,0 +1,46 @@
+.wrapper {
+	max-width: 700px; /* вместо фиксированной ширины используем максимальную ширину для адаптивности */
+	margin: 20px auto; /* добавляем пространство вокруг обёртки */
+	padding: 20px; /* увеличиваем отступы для лучшей видимости контента */
+	border: none; /* изменяем цвет и ширину границы для более мягкого вида */
+	border-radius: 10px; /* добавляем эффект скругления углов */
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* добавляем легкую тень для глубины */
+	background-color: rgba(255, 255, 255, 0.3);
+	background: rgba(255, 255, 255, 0.2);
+	backdrop-filter: blur(20px);
+}
+
+.input {
+	font-weight: 600;
+	font-size: 18px;
+	width: 400px;
+	height: 20px;
+	margin: 20px auto; /* сохраняем тот же отступ, что и у обёртки */
+	margin-bottom: 30px; /* сохраняем тот же нижний отступ */
+	padding: 10px; /* добавляем отступы для лучшей видимости контента */
+	background-color: #fafafa; /* добавляем светло-серый фон для контраста */
+	border: 1px solid #ddd; /* изменяем цвет и ширину границы для более мягкого вида */
+	border-radius: 10px; /* добавляем эффект скругления углов */
+	margin-right: 15px;
+}
+.input:focus {
+	outline: none;
+	background-color: #ffffff;
+}
+.button {
+	padding: 0px 30px;
+	width: auto;
+	height: 45px;
+	font-weight: 700;
+	font-size: 16px;
+	background-color: #d70081;
+	color: #fff;
+	border: none;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.button:hover {
+	background-color: #ff23a7;
+}

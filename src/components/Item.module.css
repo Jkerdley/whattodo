@@ -1,0 +1,40 @@
+.container {
+	display: grid;
+	grid-template-columns: 1fr auto auto;
+	align-items: center;
+	gap: 5px;
+	margin-bottom: 20px;
+}
+
+.title {
+	font-weight: 600;
+	font-size: 18px;
+	color: #ffffff;
+	justify-self: start;
+	max-width: 500px;
+	word-break: break-all;
+}
+
+.date {
+	font-weight: 600;
+	font-size: 18px;
+	color: #ffffff;
+	margin-right: 10px;
+	justify-self: end;
+}
+
+.button {
+	width: 30px;
+	height: 30px;
+	font-weight: 900;
+	background-color: #92084f;
+	color: #fff;
+	border: none;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.button:hover {
+	background-color: #e9268b;
+}

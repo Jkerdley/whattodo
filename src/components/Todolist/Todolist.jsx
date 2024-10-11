@@ -27,14 +27,14 @@ export const TodoList = () => {
 		}
 	};
 
+	const deleteTodoItem = (deletedItemId) => {
+		setTodos(todos.filter((todo) => todo.id !== deletedItemId));
+	};
+
 	const handleKeyPress = (event) => {
 		if (event.key === 'Enter') {
 			addTodo();
 		}
-	};
-
-	const deleteTodoItem = (deletedItemId) => {
-		setTodos(todos.filter((todo) => todo.id !== deletedItemId));
 	};
 
 	return (
@@ -55,7 +55,7 @@ export const TodoList = () => {
 
 			<ul>
 				{todos.map((todo) => (
-					<Item key={todo.id} title={todo.title} id={todo.id} date={todo.id} deleteTodoItem={deleteTodoItem} />
+					<Item key={todo.id} title={todo.title} id={todo.id} deleteTodoItem={deleteTodoItem} />
 				))}
 			</ul>
 		</div>

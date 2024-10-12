@@ -1,9 +1,22 @@
 import { Item } from '../Item';
 import { useState, useEffect, useCallback } from 'react';
-import { debounce } from '../Debounce';
 import styles from './Todo.module.css';
 
 const API_URL = 'http://localhost:3004/todos';
+
+const debounce = (func, wait) => {
+	let timeout;
+
+	return function (...args) {
+		if (timeout) {
+			clearTimeout(timeout);
+		}
+
+		timeout = setTimeout(() => {
+			func(...args);
+		}, wait);
+	};
+};
 
 export const TodoList = () => {
 	const [title, setTitle] = useState('');
@@ -11,7 +24,7 @@ export const TodoList = () => {
 	const [loading, setLoading] = useState(false);
 	const [searchItem, setSearchItem] = useState('');
 	const [filteredTodos, setFilteredTodos] = useState([]);
-	const [alphabetSort, setalphabetSort] = useState(false);
+	const [sortAlphabetically, setSortAlphabetically] = useState(false);
 	const [sortedTodos, setSortedTodos] = useState([]);
 
 	const loadTodos = useCallback(() => {
@@ -29,12 +42,12 @@ export const TodoList = () => {
 	}, [loadTodos]);
 
 	useEffect(() => {
-		if (alphabetSort) {
+		if (sortAlphabetically) {
 			setSortedTodos([...todos].sort((a, b) => a.title.localeCompare(b.title)));
 		} else {
 			setSortedTodos(todos);
 		}
-	}, [todos, alphabetSort]);
+	}, [todos, sortAlphabetically]);
 
 	const requestAddTodo = () => {
 		if (title) {
@@ -129,8 +142,8 @@ export const TodoList = () => {
 		}
 	};
 
-	const togglealphabetSort = () => {
-		setalphabetSort(!alphabetSort);
+	const toggleSortAlphabetically = () => {
+		setSortAlphabetically(!sortAlphabetically);
 	};
 
 	return (
@@ -158,8 +171,8 @@ export const TodoList = () => {
 			<button onClick={requestAddTodo} className={styles.button}>
 				Добавить
 			</button>
-			<button onClick={togglealphabetSort} className={styles.alphabetButton}>
-				{alphabetSort ? 'Сортировать по умолчанию.' : 'Сортировать А->Я'}
+			<button onClick={''} className={styles.alphabetButton}>
+				A->Я
 			</button>
 			<ul>
 				{loading ? (
@@ -177,7 +190,7 @@ export const TodoList = () => {
 						/>
 					))
 				) : (
-					sortedTodos.map((todo) => (
+					todos.map((todo) => (
 						<Item
 							key={todo.id}
 							title={todo.title}

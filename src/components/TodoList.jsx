@@ -1,9 +1,11 @@
-import { Item } from '../Item';
 import { useState, useEffect, useCallback } from 'react';
-import { debounce } from '../Debounce';
-import styles from './Todo.module.css';
 import { ref, onValue, push, remove, update } from 'firebase/database';
-import { db } from '../../firebase';
+import { db } from '../firebase';
+import { debounce } from './Debounce';
+import { TodoInput } from './TodoInput';
+import { SearchInput } from './SearchInput';
+import { ItemList } from './ItemList';
+import styles from './TodoList.module.css';
 
 export const TodoList = () => {
 	const [title, setTitle] = useState('');
@@ -29,7 +31,7 @@ export const TodoList = () => {
 				}
 				setLoading(false);
 			},
-			(error) => {
+			() => {
 				setLoading(false);
 			},
 		);
@@ -59,7 +61,7 @@ export const TodoList = () => {
 				loadTodos();
 			});
 			setTitle('');
-		} else if (!title) {
+		} else {
 			alert('Пожалуйста введите текст задачи');
 		}
 	};
@@ -113,59 +115,32 @@ export const TodoList = () => {
 
 	return (
 		<div className={styles.wrapper}>
-			<input
-				className={styles.searchItem}
-				value={searchItem}
-				onChange={(event) => setSearchItem(event.target.value)}
-				type="text"
-				name="search"
-				placeholder="Поиск"
-				onKeyDown={handleKeyPress}
-				onBlur={onBlurClearItem}
+			<SearchInput
+				searchItem={searchItem}
+				setSearchItem={setSearchItem}
+				handleKeyPress={handleKeyPress}
+				onBlurClearItem={onBlurClearItem}
 			/>
-			<input
-				className={styles.input}
-				value={title}
-				onChange={(event) => setTitle(event.target.value)}
-				type="text"
-				name="title"
-				placeholder="Введите задачу"
-				onKeyDown={handleKeyPress}
+			<TodoInput
+				title={title}
+				setTitle={setTitle}
+				handleKeyPress={handleKeyPress}
+				requestAddTodo={requestAddTodo}
 			/>
-
 			<button onClick={requestAddTodo} className={styles.button}>
 				Добавить
 			</button>
 			<button onClick={togglealphabetSort} className={styles.alphabetButton}>
-				{alphabetSort ? 'Сортировать по умолчанию.' : 'Сортировать А->Я'}
+				{alphabetSort ? 'Сортировать по умолчанию' : 'Сортировать А->Я'}
 			</button>
-			<ul>
-				{loading ? (
-					<div className={styles.loader} />
-				) : searchItem.trim() !== '' && filteredTodos.length === 0 ? (
-					<p className={styles.nothing}>Ничего не найдено</p>
-				) : searchItem.trim() === '' ? (
-					sortedTodos.map((todo) => (
-						<Item
-							key={todo.id}
-							title={todo.title}
-							id={todo.id}
-							deleteTodoItem={requestDeleteTodoItem}
-							editTodoItem={requestEditTodoItem}
-						/>
-					))
-				) : (
-					filteredTodos.map((todo) => (
-						<Item
-							key={todo.id}
-							title={todo.title}
-							id={todo.id}
-							deleteTodoItem={requestDeleteTodoItem}
-							editTodoItem={requestEditTodoItem}
-						/>
-					))
-				)}
-			</ul>
+			<ItemList
+				todos={sortedTodos}
+				filteredTodos={filteredTodos}
+				searchItem={searchItem}
+				loading={loading}
+				requestDeleteTodoItem={requestDeleteTodoItem}
+				requestEditTodoItem={requestEditTodoItem}
+			/>
 		</div>
 	);
 };

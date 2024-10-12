@@ -2,8 +2,8 @@ import { Item } from '../Item';
 import { useState, useEffect, useCallback } from 'react';
 import { debounce } from '../Debounce';
 import styles from './Todo.module.css';
-
-const API_URL = 'http://localhost:3004/todos';
+import { ref, onValue, push, remove, update } from 'firebase/database';
+import { db } from '../../firebase';
 
 export const TodoList = () => {
 	const [title, setTitle] = useState('');
@@ -16,12 +16,23 @@ export const TodoList = () => {
 
 	const loadTodos = useCallback(() => {
 		setLoading(true);
-		fetch(API_URL)
-			.then((loadedData) => loadedData.json())
-			.then((loadedTodos) => {
-				setTodos(loadedTodos);
-			})
-			.finally(() => setLoading(false));
+		const todosDbRef = ref(db, 'todos');
+		onValue(
+			todosDbRef,
+			(snap) => {
+				const loadedData = snap.val();
+				if (loadedData) {
+					const todoArray = Object.keys(loadedData).map((key) => ({ id: key, ...loadedData[key] }));
+					setTodos(todoArray);
+				} else {
+					setTodos([]);
+				}
+				setLoading(false);
+			},
+			(error) => {
+				setLoading(false);
+			},
+		);
 	}, []);
 
 	useEffect(() => {
@@ -29,28 +40,24 @@ export const TodoList = () => {
 	}, [loadTodos]);
 
 	useEffect(() => {
+		let updatedTodos = searchItem.trim() !== '' ? filteredTodos : todos;
 		if (alphabetSort) {
-			setSortedTodos([...todos].sort((a, b) => a.title.localeCompare(b.title)));
-		} else {
-			setSortedTodos(todos);
+			updatedTodos = [...updatedTodos].sort((a, b) => a.title.localeCompare(b.title));
 		}
-	}, [todos, alphabetSort]);
+		setSortedTodos(updatedTodos);
+	}, [todos, alphabetSort, searchItem, filteredTodos]);
 
 	const requestAddTodo = () => {
 		if (title) {
-			fetch(API_URL, {
-				method: 'POST',
-				headers: { 'Content-type': 'application/json; charset=utf-8' },
-				body: JSON.stringify({
-					title: title,
-					completed: false,
-				}),
-			})
-				.then((raw) => raw.json())
-				.then((response) => {
-					console.log('Задача добавлена', response);
-					loadTodos();
-				});
+			const todosRef = ref(db, 'todos');
+			const newTodoItem = {
+				title: title,
+				completed: false,
+			};
+
+			push(todosRef, newTodoItem).then(() => {
+				loadTodos();
+			});
 			setTitle('');
 		} else if (!title) {
 			alert('Пожалуйста введите текст задачи');
@@ -58,61 +65,32 @@ export const TodoList = () => {
 	};
 
 	const requestDeleteTodoItem = (id) => {
-		if (!id) {
-			console.error('Идентификатор задачи не указан');
-			return;
-		}
-		fetch(`${API_URL}/${id}`, {
-			method: 'DELETE',
-		})
-			.then((raw) => raw.json())
-			.then((response) => {
-				console.log('Задача удалена', response);
-				loadTodos();
-			});
+		const todosRef = ref(db, `todos/${id}`);
+		remove(todosRef).then(() => {
+			loadTodos();
+		});
 	};
 
 	const requestEditTodoItem = (id, title) => {
-		if (!id) {
-			console.error('Идентификатор задачи не указан');
-			return;
-		}
 		const newTitle = prompt('Введите новую задачу', title);
-
-		if (newTitle === null || newTitle === '') {
-			return;
-		} else {
-			fetch(`${API_URL}/${id}`, {
-				method: 'PATCH',
-				headers: { 'Content-type': 'application/json; charset=utf-8' },
-				body: JSON.stringify({
-					title: newTitle,
-				}),
-			})
-				.then((raw) => raw.json())
-				.then((response) => {
-					console.log('Задача изменена', response);
-					loadTodos();
-				});
+		if (newTitle) {
+			const todoRef = ref(db, `todos/${id}`);
+			update(todoRef, { title: newTitle }).then(() => {
+				loadTodos();
+			});
 		}
 	};
 
 	const debouncedSearch = useCallback(
 		debounce((searchItem) => {
 			if (searchItem) {
-				fetch(API_URL)
-					.then((response) => response.json())
-					.then((todos) => {
-						const filteredTodos = todos.filter((todo) =>
-							todo.title.toLowerCase().includes(searchItem.toLowerCase()),
-						);
-						setFilteredTodos(filteredTodos);
-					});
+				const filtered = todos.filter((todo) => todo.title.toLowerCase().includes(searchItem.toLowerCase()));
+				setFilteredTodos(filtered);
 			} else {
 				setFilteredTodos([]);
 			}
 		}, 300),
-		[searchItem],
+		[todos],
 	);
 
 	useEffect(() => {
@@ -166,8 +144,8 @@ export const TodoList = () => {
 					<div className={styles.loader} />
 				) : searchItem.trim() !== '' && filteredTodos.length === 0 ? (
 					<p className={styles.nothing}>Ничего не найдено</p>
-				) : filteredTodos.length > 0 ? (
-					filteredTodos.map((todo) => (
+				) : searchItem.trim() === '' ? (
+					sortedTodos.map((todo) => (
 						<Item
 							key={todo.id}
 							title={todo.title}
@@ -177,7 +155,7 @@ export const TodoList = () => {
 						/>
 					))
 				) : (
-					sortedTodos.map((todo) => (
+					filteredTodos.map((todo) => (
 						<Item
 							key={todo.id}
 							title={todo.title}
